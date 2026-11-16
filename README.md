@@ -1,8 +1,9 @@
-Meta Lead Ads Real-Time Mobile Integration
+
+# Meta Lead Ads Real-Time Mobile Integration
 
 A React Native application integrated with Meta Lead Ads that displays newly submitted leads in real time using a Node.js backend, Meta Graph API and Socket.IO.
 
-Overview
+## Overview
 
 This project demonstrates an end-to-end integration between Meta Lead Ads and a mobile application.
 
@@ -10,8 +11,9 @@ Whenever a new lead is submitted through Meta Lead Ads, Meta sends a webhook not
 
 The mobile dashboard automatically updates when a new lead arrives without requiring a manual refresh.
 
-Architecture
+## Architecture
 
+```text
 Meta Lead Ads
      |
      | Lead submission
@@ -36,33 +38,32 @@ React Native Application
      |
      v
 Live Leads Dashboard
+```
 
-Technology Stack
+## Technology Stack
 
-Frontend
-
+### Frontend
 - React Native
 - Expo
 - TypeScript
 - Socket.IO Client
 
-Backend
-
+### Backend
 - Node.js
 - Express.js
 - Socket.IO
 - Axios
 - dotenv
 
-Integration
-
+### Integration
 - Meta Lead Ads
 - Meta Graph API
 - Meta Webhooks
 - ngrok for exposing the local backend to Meta
 
-Project Structure
+## Project Structure
 
+```text
 leads-mobile/
 │
 ├── backend/
@@ -77,32 +78,33 @@ leads-mobile/
 ├── .env.example
 ├── .gitignore
 └── package.json
+```
 
-Assumptions Made
+## Assumptions Made
 
 The following assumptions were made during implementation:
 
-1. Meta Page and Instant Form: A Facebook Page and an active Instant Form are already configured in the Meta developer environment.
+1. **Meta Page and Instant Form:** A Facebook Page and an active Instant Form are already configured in the Meta developer environment.
 
-2. Test Lead Submissions: The Meta Lead Ads Testing Tool is used to simulate lead submissions. Actual advertising campaigns are not required for testing.
+2. **Test Lead Submissions:** The Meta Lead Ads Testing Tool is used to simulate lead submissions. Actual advertising campaigns are not required for testing.
 
-3. Lead Fields: The Instant Form contains Full Name, Email and Phone Number fields. The backend maps these fields into the application's lead structure.
+3. **Lead Fields:** The Instant Form contains Full Name, Email and Phone Number fields. The backend maps these fields into the application's lead structure.
 
-4. Webhook Notifications: Meta sends a webhook notification containing the lead ID. The backend uses this ID to retrieve the complete lead information through the Graph API.
+4. **Webhook Notifications:** Meta sends a webhook notification containing the lead ID. The backend uses this ID to retrieve the complete lead information through the Graph API.
 
-5. Single Page Integration: The implementation is configured for a specific Facebook Page and its associated Instant Form.
+5. **Single Page Integration:** The implementation is configured for a specific Facebook Page and its associated Instant Form.
 
-6. Real-Time Communication: The mobile application maintains a Socket.IO connection with the backend to receive incoming leads.
+6. **Real-Time Communication:** The mobile application maintains a Socket.IO connection with the backend to receive incoming leads.
 
-7. Development Environment: The backend runs locally and is exposed to Meta through a public HTTPS webhook URL using ngrok.
+7. **Development Environment:** The backend runs locally and is exposed to Meta through a public HTTPS webhook URL using ngrok.
 
-8. Initial Dashboard Data: Sample leads are included to demonstrate the dashboard layout before actual lead submissions arrive.
+8. **Initial Dashboard Data:** Sample leads are included to demonstrate the dashboard layout before actual lead submissions arrive.
 
-9. Missing Form Fields: The backend handles missing name, email or phone fields by assigning null values.
+9. **Missing Form Fields:** The backend handles missing name, email or phone fields by assigning null values.
 
-10. No Database Persistence: The current implementation focuses on real-time lead retrieval and display. It does not persist incoming leads in a database.
+10. **No Database Persistence:** The current implementation focuses on real-time lead retrieval and display. It does not persist incoming leads in a database.
 
-Prerequisites
+## Prerequisites
 
 Before running the project, ensure you have:
 
@@ -115,10 +117,11 @@ Before running the project, ensure you have:
 - ngrok installed and configured.
 - A laptop and mobile device connected to the same Wi-Fi network for local development.
 
-Environment Configuration
+## Environment Configuration
 
-Create a ".env" file inside the "backend" directory.
+Create a `.env` file inside the `backend` directory.
 
+```env
 PORT=3000
 
 VERIFY_TOKEN=your_webhook_verification_token
@@ -129,80 +132,97 @@ PAGE_ACCESS_TOKEN=your_page_access_token
 APP_ID=your_meta_app_id
 APP_SECRET=your_meta_app_secret
 USER_ACCESS_TOKEN=your_user_access_token
+```
 
 Replace the placeholder values with your own Meta application credentials.
 
-Important: Never commit the actual ".env" file or expose access tokens and app secrets in the repository.
+**Important:** Never commit the actual `.env` file or expose access tokens and app secrets in the repository.
 
-Setup Instructions
+## Setup Instructions
 
-1. Clone the repository
+### 1. Clone the repository
 
+```bash
 git clone <your-github-repository-url>
 cd leads-mobile
+```
 
-2. Install frontend dependencies
+### 2. Install frontend dependencies
 
 From the project root:
 
+```bash
 npm install
+```
 
-3. Install backend dependencies
+### 3. Install backend dependencies
 
 Navigate to the backend directory:
 
+```bash
 cd backend
 npm install
+```
 
-Create the backend ".env" file and configure the required environment variables.
+Create the backend `.env` file and configure the required environment variables.
 
-4. Start the backend
+### 4. Start the backend
 
 From the backend directory:
 
+```bash
 node server.js
+```
 
 The backend starts on port 3000 by default.
 
-5. Expose the backend using ngrok
+### 5. Expose the backend using ngrok
 
 In a separate terminal, run:
 
+```bash
 ngrok http 3000
+```
 
 Copy the HTTPS forwarding URL generated by ngrok.
 
 Configure Meta Webhooks with the following callback URL:
 
+```text
 https://your-ngrok-domain/webhook
+```
 
-Use the same verification token configured in the backend ".env" file.
+Use the same verification token configured in the backend `.env` file.
 
-Subscribe to the "leadgen" webhook field for the Facebook Page.
+Subscribe to the `leadgen` webhook field for the Facebook Page.
 
-6. Configure the mobile application
+### 6. Configure the mobile application
 
 Update the Socket.IO server URL in the mobile application to use your computer's local network IP address.
 
 For example:
 
+```text
 http://192.168.1.20:3000
+```
 
 Replace the example IP with your computer's actual local IPv4 address.
 
 Ensure the mobile device and laptop are connected to the same Wi-Fi network.
 
-7. Start the Expo application
+### 7. Start the Expo application
 
 From the project root:
 
+```bash
 npx expo start
+```
 
 Scan the QR code using Expo Go on your mobile device.
 
 The Live Leads Dashboard should now connect to the backend.
 
-Testing the Integration
+## Testing the Integration
 
 1. Start the backend server.
 2. Start the Expo application on the mobile device.
@@ -216,10 +236,9 @@ Testing the Integration
 
 The newly submitted lead should automatically appear in the application without manually refreshing the screen.
 
-Expected Result
+## Expected Result
 
 The application displays:
-
 - Lead ID
 - Full Name
 - Email Address
@@ -228,7 +247,7 @@ The application displays:
 
 Newly submitted leads are added to the dashboard in real time through Socket.IO.
 
-Important Notes
+## Important Notes
 
 - The Meta Page Access Token must be valid for Graph API requests.
 - The ngrok URL must remain available while testing webhook delivery.
@@ -237,6 +256,6 @@ Important Notes
 - Test lead values generated by Meta may contain placeholder data.
 - This implementation is intended as a working integration demonstration and uses development configuration rather than production deployment settings.
 
-Author
+## Author
 
 Developed as part of the Meta Lead Ads integration assignment.
