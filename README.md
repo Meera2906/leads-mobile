@@ -1,56 +1,242 @@
-# Welcome to your Expo app 👋
+Meta Lead Ads Real-Time Mobile Integration
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native application integrated with Meta Lead Ads that displays newly submitted leads in real time using a Node.js backend, Meta Graph API and Socket.IO.
 
-## Get started
+Overview
 
-1. Install dependencies
+This project demonstrates an end-to-end integration between Meta Lead Ads and a mobile application.
 
-   ```bash
-   npm install
-   ```
+Whenever a new lead is submitted through Meta Lead Ads, Meta sends a webhook notification to the backend. The backend retrieves the complete lead information using the Meta Graph API and broadcasts it to the connected React Native application through Socket.IO.
 
-2. Start the app
+The mobile dashboard automatically updates when a new lead arrives without requiring a manual refresh.
 
-   ```bash
-   npx expo start
-   ```
+Architecture
 
-In the output, you'll find options to open the app in a
+Meta Lead Ads
+     |
+     | Lead submission
+     v
+Meta Webhook
+     |
+     | POST /webhook
+     v
+Node.js + Express Backend
+     |
+     | Fetch lead details using lead ID
+     v
+Meta Graph API
+     |
+     | Lead information
+     v
+Socket.IO
+     |
+     | newLead event
+     v
+React Native Application
+     |
+     v
+Live Leads Dashboard
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Technology Stack
 
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Frontend
 
-## Get a fresh project
+- React Native
+- Expo
+- TypeScript
+- Socket.IO Client
 
-When you're ready, run:
+Backend
 
-```bash
-npm run reset-project
-```
+- Node.js
+- Express.js
+- Socket.IO
+- Axios
+- dotenv
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Integration
 
-### Other setup steps
+- Meta Lead Ads
+- Meta Graph API
+- Meta Webhooks
+- ngrok for exposing the local backend to Meta
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Project Structure
 
-## Learn more
+leads-mobile/
+│
+├── backend/
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+├── src/
+│   └── app/
+│       └── index.tsx
+│
+├── .env.example
+├── .gitignore
+└── package.json
 
-To learn more about developing your project with Expo, look at the following resources:
+Assumptions Made
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+The following assumptions were made during implementation:
 
-## Join the community
+1. Meta Page and Instant Form: A Facebook Page and an active Instant Form are already configured in the Meta developer environment.
 
-Join our community of developers creating universal apps.
+2. Test Lead Submissions: The Meta Lead Ads Testing Tool is used to simulate lead submissions. Actual advertising campaigns are not required for testing.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. Lead Fields: The Instant Form contains Full Name, Email and Phone Number fields. The backend maps these fields into the application's lead structure.
+
+4. Webhook Notifications: Meta sends a webhook notification containing the lead ID. The backend uses this ID to retrieve the complete lead information through the Graph API.
+
+5. Single Page Integration: The implementation is configured for a specific Facebook Page and its associated Instant Form.
+
+6. Real-Time Communication: The mobile application maintains a Socket.IO connection with the backend to receive incoming leads.
+
+7. Development Environment: The backend runs locally and is exposed to Meta through a public HTTPS webhook URL using ngrok.
+
+8. Initial Dashboard Data: Sample leads are included to demonstrate the dashboard layout before actual lead submissions arrive.
+
+9. Missing Form Fields: The backend handles missing name, email or phone fields by assigning null values.
+
+10. No Database Persistence: The current implementation focuses on real-time lead retrieval and display. It does not persist incoming leads in a database.
+
+Prerequisites
+
+Before running the project, ensure you have:
+
+- Node.js and npm installed.
+- Expo Go installed on an Android or iOS device.
+- A Meta Developer account.
+- A Facebook Page with an active Instant Form.
+- A Meta Developer App configured for lead retrieval.
+- Required Meta permissions and webhook subscriptions.
+- ngrok installed and configured.
+- A laptop and mobile device connected to the same Wi-Fi network for local development.
+
+Environment Configuration
+
+Create a ".env" file inside the "backend" directory.
+
+PORT=3000
+
+VERIFY_TOKEN=your_webhook_verification_token
+
+PAGE_ID=your_facebook_page_id
+PAGE_ACCESS_TOKEN=your_page_access_token
+
+APP_ID=your_meta_app_id
+APP_SECRET=your_meta_app_secret
+USER_ACCESS_TOKEN=your_user_access_token
+
+Replace the placeholder values with your own Meta application credentials.
+
+Important: Never commit the actual ".env" file or expose access tokens and app secrets in the repository.
+
+Setup Instructions
+
+1. Clone the repository
+
+git clone <your-github-repository-url>
+cd leads-mobile
+
+2. Install frontend dependencies
+
+From the project root:
+
+npm install
+
+3. Install backend dependencies
+
+Navigate to the backend directory:
+
+cd backend
+npm install
+
+Create the backend ".env" file and configure the required environment variables.
+
+4. Start the backend
+
+From the backend directory:
+
+node server.js
+
+The backend starts on port 3000 by default.
+
+5. Expose the backend using ngrok
+
+In a separate terminal, run:
+
+ngrok http 3000
+
+Copy the HTTPS forwarding URL generated by ngrok.
+
+Configure Meta Webhooks with the following callback URL:
+
+https://your-ngrok-domain/webhook
+
+Use the same verification token configured in the backend ".env" file.
+
+Subscribe to the "leadgen" webhook field for the Facebook Page.
+
+6. Configure the mobile application
+
+Update the Socket.IO server URL in the mobile application to use your computer's local network IP address.
+
+For example:
+
+http://192.168.1.20:3000
+
+Replace the example IP with your computer's actual local IPv4 address.
+
+Ensure the mobile device and laptop are connected to the same Wi-Fi network.
+
+7. Start the Expo application
+
+From the project root:
+
+npx expo start
+
+Scan the QR code using Expo Go on your mobile device.
+
+The Live Leads Dashboard should now connect to the backend.
+
+Testing the Integration
+
+1. Start the backend server.
+2. Start the Expo application on the mobile device.
+3. Ensure the Socket.IO connection is established.
+4. Open Meta's Lead Ads Testing Tool.
+5. Select the configured Facebook Page and Instant Form.
+6. Submit a test lead.
+7. Verify that the backend receives the webhook notification.
+8. Verify that the backend retrieves the lead details through the Graph API.
+9. Observe the mobile dashboard.
+
+The newly submitted lead should automatically appear in the application without manually refreshing the screen.
+
+Expected Result
+
+The application displays:
+
+- Lead ID
+- Full Name
+- Email Address
+- Phone Number
+- Submission Time
+
+Newly submitted leads are added to the dashboard in real time through Socket.IO.
+
+Important Notes
+
+- The Meta Page Access Token must be valid for Graph API requests.
+- The ngrok URL must remain available while testing webhook delivery.
+- If the ngrok URL changes, update the callback URL in Meta Webhooks.
+- The Socket.IO connection must use the correct local IP address when testing on a physical device.
+- Test lead values generated by Meta may contain placeholder data.
+- This implementation is intended as a working integration demonstration and uses development configuration rather than production deployment settings.
+
+Author
+
+Developed as part of the Meta Lead Ads integration assignment.
